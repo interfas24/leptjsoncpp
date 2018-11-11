@@ -80,8 +80,11 @@ public:
         type = t;
     }
 
+    double GetNumber() const;
+
 private:    
     LeptType type;
+    double number;
 };
 
 class LeptParser

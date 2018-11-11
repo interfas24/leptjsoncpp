@@ -1,9 +1,16 @@
 #include "leptjsoncpp.h"
+#include <cassert>
 
 using namespace std;
 
 namespace lept
 {
+
+double LeptValue::GetNumber() const 
+{
+    assert(type == LEPT_NUMBER);
+    return number;
+}
 
 ParseResult LeptParser::Parse(LeptValue& v, LeptContext& j)
 {

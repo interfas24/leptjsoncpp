@@ -5,6 +5,15 @@
 
 using namespace lept;
 
+#define TEST_NUMBER(expect, json) \
+    do {\
+        LeptValue v;\
+        LeptContext j;\
+        REQUIRE(LEPT_PARSE_OK == LeptParser::Parse(v, j))\
+        REQUIRE(LEPT_NUMBER == v.GetType())\
+        REQUIRE(expect == v.GetNumber())\
+    }while(0)
+
 TEST_CASE("TestParse") {
     REQUIRE(1 == 1);
 
@@ -45,4 +54,8 @@ TEST_CASE("TestParse") {
         REQUIRE(PARSE_ROOT_NOT_SINGULAR == LeptParser::Parse(v, json));
         REQUIRE(LeptValue::LEPT_NULL == v.GetType());
     }
+}
+
+TEST_CASE("TestNumber") {
+
 }
