@@ -93,8 +93,11 @@ public:
     static ParseResult Parse(LeptValue &v, LeptContext &j);
 
 private:
-    static ParseResult ParseValue(LeptValue& v, LeptContext &j);
-    static ParseResult ParseNULL(LeptValue& v, LeptContext &j);
+    static ParseResult ParseValue(LeptValue &v, LeptContext &j);
+    static ParseResult ParseNULL(LeptValue &v, LeptContext &j);
+    static ParseResult ParseTrue(LeptValue &v, LeptContext &j);
+    static ParseResult ParseFalse(LeptValue &v, LeptContext &j);
+    static ParseResult ParseLiteral(LeptValue &v, LeptContext &j);
     static void ParseWhitespace(LeptContext &j);
 };
 
