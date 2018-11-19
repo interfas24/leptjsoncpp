@@ -27,13 +27,13 @@ public:
         return *this;
     }
 
-    LeptContext& operator+=(int adv)
+    LeptContext& operator+=(std::size_t adv)
     {
         offset += adv;
         return *this;
     }
 
-    std::string GetOneToken(int count) const {
+    std::string GetOneToken(std::size_t count) const {
         return std::string(CurrentJson(), count);
     }
 
@@ -51,7 +51,7 @@ public:
 
 private:
     const char* json;
-    int offset;
+    std::size_t offset;
 };
 
 class LeptValue 
@@ -82,6 +82,10 @@ public:
 
     double GetNumber() const;
 
+    void SetNumber(double num) {
+        number = num;
+    }
+
 private:    
     LeptType type;
     double number;
@@ -94,10 +98,9 @@ public:
 
 private:
     static ParseResult ParseValue(LeptValue &v, LeptContext &j);
-    static ParseResult ParseNULL(LeptValue &v, LeptContext &j);
-    static ParseResult ParseTrue(LeptValue &v, LeptContext &j);
-    static ParseResult ParseFalse(LeptValue &v, LeptContext &j);
-    static ParseResult ParseLiteral(LeptValue &v, LeptContext &j);
+    static ParseResult ParseNumber(LeptValue &v, LeptContext &j);
+    static ParseResult ParseLiteral(LeptValue &v, LeptContext &j,
+                                    const std::string& literal, LeptValue::LeptType type);
     static void ParseWhitespace(LeptContext &j);
 };
 
