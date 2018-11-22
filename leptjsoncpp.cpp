@@ -1,6 +1,10 @@
 #include "leptjsoncpp.h"
 #include <cassert>
 #include <string>
+#include <stdexcept>
+#include <cstdlib>
+#include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -40,11 +44,18 @@ ParseResult LeptParser::ParseValue(LeptValue& v, LeptContext& j)
 
 ParseResult LeptParser::ParseNumber(LeptValue &v, LeptContext &j)
 {
-    size_t end;
-    v.SetNumber(stod(j.CurrentJson(), &end));
-    if(end == 0)
-        return PARSE_INVALID_VALUE;
-    j += end;
+    //TODO: modify Context
+    const char *p = j.CurrentJson();
+    char *end;
+
+    errno = 0;
+    //use strtod not stod
+    double d = strtod(p, &end);
+    if(errno == ERANGE && (d == HUGE_VAL || d == -HUGE_VAL))
+        return PARSE_NUMBER_TOO_BIG;
+
+    j += (end - p);
+    v.SetNumber(d);
     v.SetType(LeptValue::LEPT_NUMBER);
     return PARSE_OK;
 }

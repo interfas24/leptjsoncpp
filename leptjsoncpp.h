@@ -9,7 +9,8 @@ typedef enum {
     PARSE_OK = 0,
     PARSE_EXPECT_VALUE,
     PARSE_INVALID_VALUE,
-    PARSE_ROOT_NOT_SINGULAR
+    PARSE_ROOT_NOT_SINGULAR,
+    PARSE_NUMBER_TOO_BIG
 }ParseResult;
 
 class LeptContext
