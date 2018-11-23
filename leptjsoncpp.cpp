@@ -11,6 +11,9 @@ using namespace std;
 namespace lept
 {
 
+#define ISDIGIT1TO9(d)  ('1' <= (d) && (d) <= '9')
+#define ISDIGIT(d)      ('0' <= (d) && (d) <= '9')
+
 double LeptValue::GetNumber() const 
 {
     assert(type == LEPT_NUMBER);
@@ -24,8 +27,10 @@ ParseResult LeptParser::Parse(LeptValue& v, LeptContext& j)
     ParseWhitespace(j);
     if((ret = ParseValue(v, j)) == PARSE_OK) {
         ParseWhitespace(j);
-        if(j.CurrentChar() != '\0')
+        if(j.CurrentChar() != '\0') {
+            v.SetType(LeptValue::LEPT_NULL);
             return PARSE_ROOT_NOT_SINGULAR;
+        }
     }
     return ret;
 }
@@ -44,17 +49,41 @@ ParseResult LeptParser::ParseValue(LeptValue& v, LeptContext& j)
 
 ParseResult LeptParser::ParseNumber(LeptValue &v, LeptContext &j)
 {
-    //TODO: modify Context
     const char *p = j.CurrentJson();
-    char *end;
+
+    if(*p == '-')
+        p++;
+    if(*p == '0')
+        p++;
+    else {
+        if(!ISDIGIT1TO9(*p)) return PARSE_INVALID_VALUE;
+        for(p++; ISDIGIT(*p); p++)
+            ;
+    }
+
+    if(*p == '.') {
+        p++;
+        if(!ISDIGIT(*p)) return PARSE_INVALID_VALUE;
+        for(p++; ISDIGIT(*p); p++)
+            ;
+    }
+
+    if(*p == 'e' || *p == 'E') {
+        p++;
+        if(*p == '+' || *p == '-') 
+            p++;
+        if(!ISDIGIT(*p)) return PARSE_INVALID_VALUE;
+        for(p++; ISDIGIT(*p); p++)
+            ;
+    }
 
     errno = 0;
     //use strtod not stod
-    double d = strtod(p, &end);
+    double d = strtod(j.CurrentJson(), NULL);
     if(errno == ERANGE && (d == HUGE_VAL || d == -HUGE_VAL))
         return PARSE_NUMBER_TOO_BIG;
 
-    j += (end - p);
+    j += (p - j.CurrentJson());
     v.SetNumber(d);
     v.SetType(LeptValue::LEPT_NUMBER);
     return PARSE_OK;

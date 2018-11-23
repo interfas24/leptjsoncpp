@@ -47,21 +47,34 @@ TEST_CASE("TestParse") {
         REQUIRE(LeptValue::LEPT_FALSE == v.GetType());
     }
 
-    #if 0
     SECTION("parse expect value") {
         TEST_EXPECT("");
-        TEST_EXPECT("");
+        TEST_EXPECT(" ");
     }
 
     SECTION("parse invalid value") {
         TEST_INVALID("nul");
-        TEST_INVALID("?");
+        TEST_INVALID("?"); 
+
+        /* invalid number */
+        TEST_INVALID("+0");
+        TEST_INVALID("+1");
+        TEST_INVALID(".123");
+        TEST_INVALID("1.");
+        TEST_INVALID("INF");
+        TEST_INVALID("inf");
+        TEST_INVALID("NAN");
+        TEST_INVALID("nan");
     }
 
     SECTION("parse root not singular") {
-        TEST_NOT_SINGULAR("null x");
+        TEST_NOT_SINGULAR("null x"); 
+
+        /* invalid number */
+        TEST_NOT_SINGULAR("0123"); 
+        TEST_NOT_SINGULAR("0x0"); 
+        TEST_NOT_SINGULAR("0x123"); 
     }
-    #endif
 }
 
 TEST_CASE("TestNumber") {
