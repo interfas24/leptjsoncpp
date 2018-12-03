@@ -2,8 +2,11 @@
 
 #include "catch.hpp"
 #include "leptjsoncpp.h"
+#include <iostream>
+#include <string>
 
 using namespace lept;
+using namespace std;
 
 #define TEST_NUMBER(expect, json)   \
     do {\
@@ -109,4 +112,22 @@ TEST_CASE("TestNumber") {
         TEST_NUMBER(-1.7976931348623157e+308, "-1.7976931348623157e+308");
     }
 
+}
+
+
+TEST_CASE("LeptStack")
+{
+    SECTION("basic")
+    {
+        LeptStack s;
+        *s.Push<int>() = 1;
+        *s.Push<string>() = string("hello");
+        *s.Push<char>() = 'a';
+
+        REQUIRE(*s.Pop<char>() == 'a');
+        string *str = s.Pop<string>();
+        REQUIRE(*str == string("hello"));
+        str->~basic_string();
+        REQUIRE(*s.Pop<int>() == 1);
+    }
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cstdlib>
 
 namespace lept
 {
@@ -19,8 +20,18 @@ class LeptStack
 {
 public:
     LeptStack()
-        :p(nullptr), top(0), max_stack_size(MAX_STACK_SIZE)
+        :p_base((char*)(malloc(MAX_STACK_SIZE))),
+       	 top(0),
+	     capacity(MAX_STACK_SIZE)
     {
+    }
+
+    ~LeptStack()
+    {
+        if((p_base != nullptr) &&
+           (top == 0)) {
+            std::free(p_base);
+        }
     }
 
     LeptStack(const LeptStack&) = delete;
@@ -28,10 +39,33 @@ public:
     LeptStack& operator=(const LeptStack&) = delete;
     LeptStack& operator=(LeptStack&&) = delete;
 
+    template<typename T>
+    T* Push()
+    {
+        T* p = new (p_base+top) T(); 
+        if(p != nullptr) {
+            top += sizeof(T);
+        }
+        return p;
+    }
+
+    template<typename T>
+    T* Pop()
+    {
+        top -= sizeof(T);
+        return Top<T>();
+    }
+
+    template<typename T>
+    T* Top() const
+    {
+        return reinterpret_cast<T*>(p_base + top);
+    }
+
 private:
-    char *p;
+    char *p_base;
     std::size_t top;
-    const std::size_t max_stack_size;
+    std::size_t capacity;
 };
 
 class LeptContext
