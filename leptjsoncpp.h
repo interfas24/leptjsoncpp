@@ -13,6 +13,27 @@ typedef enum {
     PARSE_NUMBER_TOO_BIG
 }ParseResult;
 
+#define MAX_STACK_SIZE  (512)
+
+class LeptStack
+{
+public:
+    LeptStack()
+        :p(nullptr), top(0), max_stack_size(MAX_STACK_SIZE)
+    {
+    }
+
+    LeptStack(const LeptStack&) = delete;
+    LeptStack(LeptStack&&) = delete;
+    LeptStack& operator=(const LeptStack&) = delete;
+    LeptStack& operator=(LeptStack&&) = delete;
+
+private:
+    char *p;
+    std::size_t top;
+    const std::size_t max_stack_size;
+};
+
 class LeptContext
 {
 public:
@@ -87,9 +108,11 @@ public:
         number = num;
     }
 
+
 private:    
     LeptType type;
     double number;
+
 };
 
 class LeptParser
